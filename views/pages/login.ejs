@@ -1,0 +1,30 @@
+<div class="container">
+<div class="auth-container">
+<div class="auth-card">
+<div style="text-align:center;margin-bottom:28px">
+<div style="width:70px;height:70px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+</div>
+<h1 class="auth-title">Selamat Datang</h1>
+<p class="auth-subtitle">Masuk ke akun DMW STORE Anda</p>
+</div>
+<% if (typeof error !== 'undefined' && error) { %>
+<div class="alert-error"><%= error %></div>
+<% } %>
+<form action="/login" method="POST">
+<div class="input-group">
+<label>Username</label>
+<input type="text" name="username" required placeholder="Masukkan username">
+</div>
+<div class="input-group">
+<label>Password</label>
+<input type="password" name="password" required placeholder="Masukkan password">
+</div>
+<button type="submit" class="btn btn-primary btn-lg" style="width:100%;margin-top:10px">MASUK</button>
+</form>
+<p style="margin-top:22px;text-align:center;color:var(--text-secondary);font-size:14px">
+Belum punya akun? <a href="/register" style="color:var(--cyan);font-weight:700">Daftar sekarang</a>
+</p>
+</div>
+</div>
+</div>
