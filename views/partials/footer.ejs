@@ -1,0 +1,44 @@
+<%
+const siteTitle = (settings?.siteName || 'DMW STORE').trim() || 'DMW STORE';
+%>
+<footer class="footer">
+<div class="container">
+<div class="footer-links-section">
+<div class="footer-links-grid">
+<% if (settings.footerLinks && settings.footerLinks.length > 0) { %>
+<% settings.footerLinks.forEach((section) => { %>
+<div class="footer-links-column">
+<h4 class="footer-links-heading"><%= section.section %></h4>
+<ul class="footer-links-list">
+<% if (section.links && section.links.length > 0) { %>
+<% section.links.forEach((link) => { %>
+<li><a href="<%= link.url %>" class="footer-link-item"><%= link.title %></a></li>
+<% }); %>
+<% } %>
+</ul>
+</div>
+<% }); %>
+<% } else { %>
+<div class="footer-links-column">
+<h4 class="footer-links-heading">INFORMASI</h4>
+<ul class="footer-links-list">
+<li><a href="/cara-beli" class="footer-link-item">CARA BELI</a></li>
+<li><a href="/faq" class="footer-link-item">BANTUAN / FAQ</a></li>
+<li><a href="/syarat-ketentuan" class="footer-link-item">SYARAT KETENTUAN</a></li>
+</ul>
+</div>
+<div class="footer-links-column">
+<h4 class="footer-links-heading">LAYANAN</h4>
+<ul class="footer-links-list">
+<li><a href="/" class="footer-link-item">PRODUK POPULER</a></li>
+<li><a href="/invoice" class="footer-link-item">CEK RIWAYAT</a></li>
+</ul>
+</div>
+<% } %>
+</div>
+</div>
+<div class="footer-bottom">
+<span>&copy; 2026 <span><%= siteTitle %></span>. All rights reserved. | Premium Game Panel Provider | Operasional 24 Jam</span>
+</div>
+</div>
+</footer>
