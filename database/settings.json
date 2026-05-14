@@ -1,0 +1,106 @@
+{
+  "siteName": "DMW STORE",
+  "gamePanelName": "DMW STORE",
+  "about": "DMW STORE adalah penyedia panel game premium untuk Mobile Legends dan PUBG. Kami menyediakan mod menu berkualitas tinggi dengan harga terjangkau dan support 24 jam.\n\nKami telah dipercaya oleh ribuan gamers Indonesia dengan layanan cepat, key original, dan anti banned system yang handal.",
+  "faq": "Q: Bagaimana cara membeli produk?\nA: Pilih produk yang diinginkan, pilih durasi, gunakan voucher jika ada, dan lakukan pembayaran via QRIS.\n\nQ: Bagaimana cara aktivasi setelah pembelian?\nA: Setelah pembayaran berhasil, key akan langsung diberikan dan bisa digunakan di aplikasi terkait.\n\nQ: Apakah aman dari banned?\nA: Produk kami dilengkapi anti banned system yang terus diupdate untuk keamanan maksimal.\n\nQ: Bagaimana jika ada masalah?\nA: Hubungi admin via WhatsApp atau Telegram yang tertera di halaman kontak.",
+  "contact": {
+    "whatsapp": "6281234567890",
+    "telegram": "@gamestore",
+    "email": "support@gamestore.com"
+  },
+  "banners": [
+    {
+      "id": "1",
+      "image": "/images/banner_dmw1.jpg",
+      "title": "WEBSITE OTOMATIS",
+      "subtitle": "Kunci Otomatis & Aman 100%",
+      "active": true
+    },
+    {
+      "id": "2",
+      "image": "/images/banner_dmw2.jpg",
+      "title": "OPEN RESELLER",
+      "subtitle": "Keuntungan Reseller up to 70%",
+      "active": true
+    }
+  ],
+  "vouchers": [
+    {
+      "code": "WELCOME10",
+      "discountPercent": 10,
+      "minPurchase": 50000,
+      "active": true
+    },
+    {
+      "code": "PROMO20",
+      "discountPercent": 20,
+      "minPurchase": 100000,
+      "active": true
+    }
+  ],
+  "adminCredentials": {
+    "username": "dexxmewa2727",
+    "password": "$2a$10$QeJkL/y1gWHQUhvH/RpvEOIjyalQeNnVAlh62h5eAqQK2vW10BzUG"
+  },
+  "pakasir": {
+    "apiKey": "",
+    "project": "",
+    "mode": "production"
+  },
+  "telegramLinks": [
+    {
+      "id": 1,
+      "title": "Channel Utama",
+      "url": "https://t.me/gamestore"
+    },
+    {
+      "id": 2,
+      "title": "Support",
+      "url": "https://t.me/gamestore_support"
+    }
+  ],
+  "whatsappLinks": [
+    {
+      "id": 1,
+      "title": "Admin WhatsApp",
+      "url": "https://wa.me/6281234567890"
+    }
+  ],
+  "footerLinks": [
+    {
+      "section": "INFORMASI",
+      "links": [
+        {
+          "id": 1,
+          "title": "CARA BELI",
+          "url": "/cara-beli"
+        },
+        {
+          "id": 2,
+          "title": "BANTUAN / FAQ",
+          "url": "/faq"
+        },
+        {
+          "id": 3,
+          "title": "SYARAT KETENTUAN",
+          "url": "/syarat-ketentuan"
+        }
+      ]
+    },
+    {
+      "section": "LAYANAN",
+      "links": [
+        {
+          "id": 4,
+          "title": "PRODUK POPULER",
+          "url": "/"
+        },
+        {
+          "id": 5,
+          "title": "CEK RIWAYAT",
+          "url": "/invoice"
+        }
+      ]
+    }
+  ]
+}
