@@ -1,0 +1,214 @@
+<%
+const siteName = (settings?.siteName || 'DMW STORE').trim() || 'DMW STORE';
+const getPrimaryPrice = (product) => {
+  const pricingOptions = Array.isArray(product.pricingOptions) ? product.pricingOptions : [];
+  return pricingOptions.length > 0 ? pricingOptions[0] : { days: 1, price: product.price1day || 0 };
+};
+const totalProducts = products.filter(p => p.status === 'active').length;
+const totalStock = products.reduce((acc, p) => acc + (Array.isArray(p.keys) ? p.keys.length : 0), 0);
+const totalSold = products.reduce((acc, p) => acc + (p.sold || 0), 0);
+const contact = settings?.contact || {};
+const allContactLinks = [
+  ...(settings.telegramLinks || []).map(l => ({ ...l, type: 'telegram' })),
+  ...(settings.whatsappLinks || []).map(l => ({ ...l, type: 'whatsapp' }))
+];
+const contactLinkTop = allContactLinks[0] || null;
+const contactLinkMiddle = allContactLinks[1] || null;
+const contactLinkBottom = allContactLinks[2] || null;
+
+// Semua kategori: default + custom dari admin
+const defaultCategoryLabels = { freefire: 'Free Fire', mlbb: 'Mobile Legends', pubg: 'PUBG' };
+const customCategoryLabels = settings.categoryLabels || {};
+const allCategoryLabels = Object.assign({}, defaultCategoryLabels, customCategoryLabels);
+
+const defaultCategories = ['freefire', 'mlbb', 'pubg'];
+const customCategories = settings.categories || [];
+// Gabungkan semua kategori, hilangkan duplikat
+const allCategories = [...new Set([...defaultCategories, ...customCategories])];
+
+// Hanya tampilkan kategori yang punya produk aktif ATAU semua jika admin ingin
+const categoriesWithProducts = allCategories.filter(cat =>
+  products.some(p => p.category === cat && p.status === 'active')
+);
+// Jika tidak ada produk sama sekali, tetap tampilkan default
+const visibleCategories = categoriesWithProducts.length > 0 ? categoriesWithProducts : defaultCategories;
+%>
+<div class="container home-page">
+
+<% if (typeof banners !== 'undefined' && banners.length > 0) { %>
+<section class="hero-slider" id="heroSlider">
+<div class="slider-container">
+<div class="slider-track" id="sliderTrack">
+<% banners.forEach((banner, index) => { %>
+<div class="hero-slide <%= index === 0 ? 'active' : '' %>" data-index="<%= index %>">
+<img src="<%= banner.image %>" alt="Banner" onerror="this.src='/images/placeholder.jpg'">
+</div>
+<% }); %>
+</div>
+<div class="slider-dots">
+<% banners.forEach((_, index) => { %>
+<span class="slider-dot <%= index === 0 ? 'active' : '' %>" onclick="slideBannerTo(<%= index %>)"></span>
+<% }); %>
+</div>
+</div>
+<div class="slider-nav-bottom">
+<button class="slider-btn slider-prev" onclick="slideBanner(-1)">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+</button>
+<button class="slider-btn slider-next" onclick="slideBanner(1)">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+</button>
+</div>
+</section>
+<% } %>
+
+<div class="marquee-bar">
+<div class="marquee-content">
+<%
+const marqueeContent = (settings.marqueeText && settings.marqueeText.trim())
+  ? settings.marqueeText.trim()
+  : 'Flash sale di ' + siteName + ' | Mod menu premium tersedia | MLBB, PUBG | Promo spesial member baru | Fast response 24 jam';
+%>
+<span class="marquee-text"><%= marqueeContent %></span>
+<span class="marquee-text"><%= marqueeContent %></span>
+</div>
+</div>
+
+<div class="home-stats-panel desktop-only">
+<div class="home-stat-card">
+<div class="home-stat-icon">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg>
+</div>
+<div class="home-stat-value"><%= totalProducts %></div>
+<div class="home-stat-label">Produk Aktif</div>
+</div>
+<div class="home-stat-card">
+<div class="home-stat-icon">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+</div>
+<div class="home-stat-value"><%= totalStock %></div>
+<div class="home-stat-label">Stock Tersedia</div>
+</div>
+<div class="home-stat-card">
+<div class="home-stat-icon">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+</div>
+<div class="home-stat-value"><%= totalSold %></div>
+<div class="home-stat-label">Terjual</div>
+</div>
+<div class="home-stat-card">
+<div class="home-stat-icon">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+</div>
+<div class="home-stat-value">24/7</div>
+<div class="home-stat-label">Online</div>
+</div>
+</div>
+
+<div class="featured-banner desktop-only">
+<div class="featured-banner-icon">
+<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+</div>
+<div class="featured-banner-content">
+<div class="featured-banner-title">Premium Game Panel Store</div>
+<div class="featured-banner-desc">Dapatkan mod menu terbaik dengan fitur lengkap, undetected, dan performa stabil untuk pengalaman gaming maksimal.</div>
+</div>
+<div class="featured-banner-cta">
+<a href="/cara-beli" class="btn btn-primary">Cara Beli</a>
+<% if (!user) { %>
+<a href="/register" class="btn btn-secondary">Daftar Sekarang</a>
+<% } %>
+</div>
+</div>
+
+<section class="search-section">
+<div class="search-bar">
+<div class="search-input">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" id="searchInput" placeholder="Cari produk panel..." onkeyup="filterProducts()">
+<button class="search-clear" id="searchClear" onclick="clearSearch()" style="display:none;">&times;</button>
+</div>
+</div>
+</section>
+
+<section class="category-tabs" id="categoryTabs">
+<button class="category-tab active" data-category="all" onclick="filterCategory('all')">Semua</button>
+<% visibleCategories.forEach(cat => { %>
+<button class="category-tab" data-category="<%= cat %>" onclick="filterCategory('<%= cat %>')"><%= allCategoryLabels[cat] || (cat.charAt(0).toUpperCase() + cat.slice(1).replace(/-/g,' ')) %></button>
+<% }); %>
+</section>
+
+<div class="products-section-wrapper">
+<div class="section-header desktop-only">
+<div class="section-title">Katalog Produk</div>
+<span class="section-badge"><%= totalProducts %> Item</span>
+</div>
+</div>
+
+<section class="products-grid" id="productsGrid">
+<%
+visibleCategories.forEach(cat => {
+  const catProducts = products.filter(p => p.category === cat);
+  const activeProducts = catProducts.filter(p => p.status === 'active');
+  const hasActive = activeProducts.length > 0;
+  if (!hasActive) return;
+%>
+<div class="category-section" data-category="<%= cat %>">
+<% activeProducts.forEach(product => { const stockCount = Array.isArray(product.keys) ? product.keys.length : 0; const soldCount = product.sold || 0; %>
+<a href="<%= user ? '/buy/' + product.id : '/login' %>" class="product-card fade-in animated-product floating-card" data-category="<%= product.category %>" data-name="<%= product.name.toLowerCase() %>">
+<div class="product-image">
+<img src="<%= product.image %>" alt="<%= product.name %>" onerror="this.src='/images/placeholder.jpg'">
+</div>
+<div class="product-body">
+<h3 class="product-name"><%= product.name %></h3>
+<span class="product-stock-info">
+<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg>
+Stock : <%= stockCount %> | Terjual : <%= soldCount %>
+</span>
+<button class="btn-buy">BUY NOW</button>
+</div>
+</a>
+<% }); %>
+</div>
+<% }); %>
+<% if (products.filter(p => p.status === 'active').length === 0) { %>
+<div class="empty-state">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+<h3 style="font-size:20px;margin-bottom:8px">Tidak ada produk aktif</h3>
+<p>Produk akan segera ditambahkan oleh admin.</p>
+</div>
+<% } %>
+</section>
+
+<div class="quick-links-section desktop-only">
+<a href="/cara-beli" class="quick-link-card">
+<div class="quick-link-icon">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+</div>
+<div class="quick-link-title">Cara Beli</div>
+<div class="quick-link-desc">Panduan pembelian</div>
+</a>
+<a href="/faq" class="quick-link-card">
+<div class="quick-link-icon">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+</div>
+<div class="quick-link-title">FAQ</div>
+<div class="quick-link-desc">Pertanyaan umum</div>
+</a>
+<a href="/syarat-ketentuan" class="quick-link-card">
+<div class="quick-link-icon">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+</div>
+<div class="quick-link-title">S&K</div>
+<div class="quick-link-desc">Syarat & ketentuan</div>
+</a>
+<a href="/top-buyers" class="quick-link-card">
+<div class="quick-link-icon">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+</div>
+<div class="quick-link-title">Top Buyers</div>
+<div class="quick-link-desc">Pengguna terbaik</div>
+</a>
+</div>
+
+</div>
