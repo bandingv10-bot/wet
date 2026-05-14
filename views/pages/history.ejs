@@ -1,0 +1,50 @@
+<div class="container" style="padding: 40px 20px;">
+<h1 style="font-size: 32px; font-weight: 800; margin-bottom: 32px;">Riwayat Pembelian</h1>
+<% if (transactions.length === 0) { %>
+<div class="empty-state">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<circle cx="12" cy="12" r="10"/>
+<line x1="12" y1="8" x2="12" y2="12"/>
+<line x1="12" y1="16" x2="12.01" y2="16"/>
+</svg>
+<h3 style="font-size: 20px; margin-bottom: 8px;">Belum ada pembelian</h3>
+<p>Mulai berbelanja untuk melihat riwayat di sini.</p>
+<a href="/" class="btn btn-primary" style="margin-top: 24px;">Lihat Produk</a>
+</div>
+<% } else { %>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<% transactions.forEach(t => { %>
+<div class="card" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+<div>
+<p style="font-size: 18px; font-weight: 700; margin-bottom: 4px;"><%= t.productName %></p>
+<p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 8px;"><%= t.duration %> • <%= new Date(t.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) %></p>
+<% if (isAdmin && t.username) { %>
+<p style="color: var(--text-secondary); font-size: 12px;">Pembeli: <%= t.username %></p>
+<% } %>
+</div>
+<div style="text-align: right;">
+<p style="font-size: 20px; font-weight: 700; color: var(--cyan); margin-bottom: 8px;">Rp <%= (t.price / 1000).toFixed(0) %>K</p>
+<span class="badge <%= t.status === 'completed' ? 'badge-completed' : t.status === 'pending' ? 'badge-pending' : 'badge-cancelled' %>">
+<%= t.status === 'completed' ? 'Selesai' : t.status === 'pending' ? 'Pending' : 'Cancelled' %>
+</span>
+</div>
+</div>
+<% if (t.key) { %>
+<div style="background: rgba(0,212,255,.06); border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
+<div>
+<p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Key</p>
+<p style="font-family: 'Courier New', monospace; font-weight: 600;"><%= t.key %></p>
+</div>
+<button onclick="copyKey('<%= t.key %>')" class="btn btn-sm btn-secondary">Salin</button>
+</div>
+<% } %>
+<% }); %>
+</div>
+<% } %>
+</div>
+<script>
+function copyKey(key) {
+navigator.clipboard.writeText(key);
+alert('Key berhasil disalin!');
+}
+</script>
