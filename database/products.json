@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "name": "Drip Client",
+    "category": "freefire",
+    "price1day": 15000,
+    "price3day": 30000,
+    "price7day": 60000,
+    "customDays": [],
+    "customPrices": {},
+    "image": "/images/dripclient.jpg",
+    "description": "Mod menu dengan fitur lengkap, undetectable, dan performa stabil.",
+    "status": "active",
+    "keys": ["KEY-FF-001:1", "KEY-FF-002:3", "KEY-FF-003:7", "KEY-FF-004"],
+    "sold": 0,
+    "createdAt": "2026-05-02T07:47:16.550Z"
+  },
+  {
+    "id": "2",
+    "name": "Prime Hook",
+    "category": "freefire",
+    "price1day": 20000,
+    "price3day": 40000,
+    "price7day": 80000,
+    "customDays": [],
+    "customPrices": {},
+    "image": "/images/primehook.jpg",
+    "description": "Premium hook script dengan aimbot dan wallhack. Anti banned system.",
+    "status": "active",
+    "keys": ["KEY-PH-001", "KEY-PH-002"],
+    "sold": 0,
+    "createdAt": "2026-05-02T07:47:16.550Z"
+  },
+  {
+    "id": "3",
+    "name": "HG Cheat",
+    "category": "freefire",
+    "price1day": 10000,
+    "price3day": 25000,
+    "price7day": 50000,
+    "customDays": [],
+    "customPrices": {},
+    "image": "/images/hgcheats.jpg",
+    "description": "HG Cheat dengan fitur auto headshot dan smooth aim.",
+    "status": "active",
+    "keys": ["KEY-HG-001", "KEY-HG-002", "KEY-HG-003", "KEY-HG-004"],
+    "sold": 0,
+    "createdAt": "2026-05-02T07:47:16.550Z"
+  }
+]
