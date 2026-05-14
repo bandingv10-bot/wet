@@ -1,0 +1,32 @@
+<div class="container" style="padding: 40px 20px;">
+<h1 style="font-size: 32px; font-weight: 800; margin-bottom: 32px;">Top Buyers</h1>
+<% if (topBuyers.length === 0) { %>
+<div class="empty-state">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<circle cx="12" cy="8" r="7"/>
+<polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+</svg>
+<h3 style="font-size: 20px; margin-bottom: 8px;">Belum ada data</h3>
+<p>Top buyers akan muncul setelah ada transaksi.</p>
+</div>
+<% } else { %>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+<% topBuyers.forEach((buyer, index) => { %>
+<div class="card" style="text-align: center; position: relative;">
+<% if (index === 0) { %>
+<div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 700;">Teratas</div>
+<% } %>
+<div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--cyan), #1d4ed8); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 32px; font-weight: 800; color: #fff;">
+<%= index + 1 %>
+</div>
+<p style="font-size: 20px; font-weight: 700; margin-bottom: 4px;"><%= buyer.username %></p>
+<p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;"><%= buyer.count %> transaksi</p>
+<div style="background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(29,78,216,0.1)); border-radius: 12px; padding: 16px;">
+<p style="color: var(--text-secondary); font-size: 12px; margin-bottom: 4px;">Total Belanja</p>
+<p style="font-size: 24px; font-weight: 800; color: var(--cyan);">Rp <%= (buyer.totalSpent / 1000).toFixed(0) %>K</p>
+</div>
+</div>
+<% }); %>
+</div>
+<% } %>
+</div>
