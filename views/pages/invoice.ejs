@@ -1,0 +1,178 @@
+<div class="container invoice-page">
+<div class="invoice-card">
+<div class="invoice-header">
+<h2>INVOICE & PEMBAYARAN</h2>
+</div>
+<div class="invoice-body">
+<% if (transactions.length === 0 && !searchQuery) { %>
+<div style="text-align:center;padding:60px 20px;">
+<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3;margin-bottom:20px;">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+<polyline points="14 2 14 8 20 8"></polyline>
+<line x1="16" y1="13" x2="8" y2="13"></line>
+<line x1="16" y1="17" x2="8" y2="17"></line>
+<polyline points="10 9 9 9 8 9"></polyline>
+</svg>
+<h3 style="font-size:20px;margin-bottom:8px;">Belum Ada Invoice</h3>
+<p style="color:var(--text-secondary);">Lakukan pembelian untuk melihat invoice dan key Anda.</p>
+<a href="/" class="btn btn-primary" style="margin-top:24px;">Lihat Produk</a>
+</div>
+<% } else { %>
+<div style="margin-bottom:24px;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+<% if (isSpecific) { %>
+<span style="font-weight:700;font-size:16px;">Invoice: <%= searchQuery %></span>
+<% } else { %>
+<span style="font-weight:700;font-size:16px;">Total Pembelian: <%= transactions.length %></span>
+<% } %>
+<% const totalSpent = transactions.filter(t => t.status === 'completed').reduce((sum, t) => sum + t.price, 0); %>
+<span style="font-family:'Orbitron',sans-serif;color:var(--yellow);font-size:18px;font-weight:700;">Rp <%= (totalSpent / 1000).toFixed(0) %>K</span>
+</div>
+<div class="invoice-search-box">
+<form action="/invoice" method="get" style="display:flex;gap:12px;align-items:center;">
+<input type="text" name="q" id="invoiceSearchInput" placeholder="Cari Invoice ID, Payment Ref, Key, atau Produk..." value="<%= searchQuery || '' %>" autocomplete="off">
+<button type="submit" class="btn btn-primary btn-sm">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+Cari
+</button>
+<% if (searchQuery) { %>
+<a href="/invoice" class="btn btn-secondary btn-sm">Reset</a>
+<% } %>
+</form>
+</div>
+<% if (searchQuery && transactions.length === 0) { %>
+<div style="text-align:center;padding:40px 20px;">
+<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.3;margin-bottom:16px;">
+<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+</svg>
+<h3 style="font-size:18px;margin-bottom:8px;">Tidak ditemukan</h3>
+<p style="color:var(--text-secondary);">Pencarian "<%= searchQuery %>" tidak ditemukan. Coba gunakan kata kunci lain.</p>
+<a href="/invoice" class="btn btn-secondary" style="margin-top:16px;">Lihat Semua Invoice</a>
+</div>
+<% } else if (searchQuery && transactions.length > 0) { %>
+<div style="margin-bottom:16px;padding:12px 16px;background:rgba(0,212,255,.06);border-radius:8px;">
+<p style="color:var(--cyan);font-size:14px;margin:0;">Ditemukan <%= transactions.length %> invoice untuk "<%= searchQuery %>"</p>
+</div>
+<% } %>
+</div>
+<div class="invoice-transactions">
+<% transactions.forEach(t => { %>
+<div class="invoice-transaction">
+<div class="invoice-transaction-info">
+<div class="invoice-transaction-name"><%= t.productName %></div>
+<div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
+<span style="color:var(--text-secondary);font-size:12px;"><%= t.duration %></span>
+<span style="color:var(--text-secondary);font-size:12px;">•</span>
+<span style="color:var(--text-secondary);font-size:12px;"><%= new Date(t.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %></span>
+</div>
+<% if (t.paymentRef) { %>
+<div style="margin-top:4px;">
+<span style="color:var(--cyan);font-size:10px;font-weight:600;">Ref: <%= t.paymentRef %></span>
+</div>
+<% } %>
+<% if (t.invoiceId) { %>
+<div style="margin-top:4px;">
+<span style="color:var(--yellow);font-size:10px;font-weight:600;">Invoice: <%= t.invoiceId %></span>
+</div>
+<% } %>
+<% if (t.status === 'pending') { %>
+<div style="margin-top:8px;">
+<img src="/qr/<%= encodeURIComponent(t.paymentQr) %>" alt="QRIS" style="width:100px;height:100px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);" />
+<p style="color:var(--yellow);font-size:11px;margin:4px 0 0 0;">Rp <%= (t.price / 1000).toFixed(0) %>K</p>
+<button onclick="cancelPayment('<%= t.paymentRef %>')" class="btn btn-secondary btn-sm" style="margin-top:6px;font-size:11px;padding:4px 10px;border-color:rgba(239,68,68,0.4);color:#ef4444;">Batalkan</button>
+</div>
+<% } else if (t.status === 'cancelled' && t.paymentQr) { %>
+<div style="margin-top:8px;">
+<img src="/qr/<%= encodeURIComponent(t.paymentQr) %>" alt="QRIS" style="width:100px;height:100px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);opacity:0.4;" />
+<p style="color:var(--red);font-size:11px;margin:4px 0 0 0;text-decoration:line-through;">Rp <%= (t.price / 1000).toFixed(0) %>K</p>
+<span style="color:var(--red);font-size:10px;">Dibatalkan</span>
+</div>
+<% } %>
+</div>
+<div class="invoice-transaction-status">
+<% if (t.key) { %>
+<span class="invoice-transaction-key" style="cursor:pointer;" onclick="copyKey('<%= t.key %>')" title="Klik untuk salin"><%= t.key %></span>
+<% } else if (t.status === 'pending') { %>
+<span style="color:var(--yellow);font-size:12px;font-style:italic;">Menunggu pembayaran...</span>
+<% } else if (t.status === 'cancelled') { %>
+<span style="color:var(--red);font-size:12px;font-style:italic;">Dibatalkan</span>
+<% } else { %>
+<span style="color:var(--text-secondary);font-size:12px;font-style:italic;">Menunggu key...</span>
+<% } %>
+<span class="badge <%= t.status === 'completed' ? 'badge-completed' : t.status === 'pending' ? 'badge-pending' : 'badge-cancelled' %>" style="margin-left:12px;">
+<%= t.status === 'completed' ? 'Selesai' : t.status === 'pending' ? 'Pending' : 'Cancelled' %>
+</span>
+</div>
+</div>
+<% }); %>
+</div>
+<% if (pendingCount > 0) { %>
+<div style="margin-top:24px;padding:20px;background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2);border-radius:12px;">
+<h4 style="color:var(--yellow);margin-bottom:12px;font-size:14px;">Pembayaran Pending</h4>
+<p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;"><%= pendingCount %> pembayaran belum dikonfirmasi. Silakan selesaikan pembayaran dan cek status secara berkala.</p>
+<button onclick="checkAllPending()" class="btn btn-primary btn-sm">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+Cek Semua Pending
+</button>
+</div>
+<% } %>
+<% } %>
+</div>
+</div>
+</div>
+<script>
+function copyKey(key) {
+  navigator.clipboard.writeText(key);
+  showToast('Key berhasil disalin!', 'success');
+}
+
+function cancelPayment(refId) {
+  if (!confirm('Yakin ingin membatalkan pembayaran ini?')) return;
+  fetch('/cancel-payment/' + refId, { method: 'POST' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success) {
+        showToast('Pembayaran berhasil dibatalkan', 'success');
+        setTimeout(function() { location.reload(); }, 1500);
+      } else {
+        showToast(data.message || 'Gagal membatalkan', 'error');
+      }
+    })
+    .catch(function() {
+      showToast('Gagal membatalkan pembayaran', 'error');
+    });
+}
+
+<% if (pendingCount > 0) { %>
+var pendingRefs = <%- JSON.stringify(pendingRefs) %>;
+var checkIndex = 0;
+function checkAllPending() {
+  if (checkIndex >= pendingRefs.length) {
+    showToast('Cek selesai! Refresh halaman untuk melihat update.', 'success');
+    setTimeout(function() { location.reload(); }, 2000);
+    return;
+  }
+  var refId = pendingRefs[checkIndex];
+  fetch('/check-payment/' + refId)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      checkIndex++;
+      if (checkIndex < pendingRefs.length) {
+        checkAllPending();
+      } else {
+        showToast('Cek selesai! Refresh halaman untuk melihat update.', 'success');
+        setTimeout(function() { location.reload(); }, 2000);
+      }
+    })
+    .catch(function() {
+      checkIndex++;
+      if (checkIndex < pendingRefs.length) {
+        checkAllPending();
+      } else {
+        showToast('Cek selesai!', 'success');
+        setTimeout(function() { location.reload(); }, 2000);
+      }
+    });
+}
+<% } %>
+</script>
